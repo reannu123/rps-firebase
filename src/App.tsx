@@ -1,11 +1,13 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
+import { useAuthState } from "react-firebase-hooks/auth";
+import NavBar from "./components/NavBar";
+import GamePage from "./components/GamePage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -14,6 +16,8 @@ import { getAnalytics } from "firebase/analytics";
 const firebaseConfig = {
   apiKey: "AIzaSyDhWYptjj88s1qre32DwsUhBARM0D5ZkN8",
   authDomain: "fir-test-e003d.firebaseapp.com",
+  databaseURL:
+    "https://fir-test-e003d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "fir-test-e003d",
   storageBucket: "fir-test-e003d.appspot.com",
   messagingSenderId: "1002363761303",
@@ -23,33 +27,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const auth = getAuth(app);
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [user] = useAuthState(auth);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <NavBar user={user} auth={auth} />
+      <div className="h-[90vh] flex flex-col items-center justify-center">
+        <section>
+          {user ? <GamePage user={user} app={app} /> : <>Login to Play</>}
+        </section>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   );
 }
