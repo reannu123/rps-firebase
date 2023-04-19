@@ -1,12 +1,14 @@
 {
   "name": "firebase-test",
   "private": true,
+  "homepage": "/firebase-test/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
