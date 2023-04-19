@@ -151,13 +151,15 @@ function GamePage(props: any) {
 
         // Compare the moves
         if (myMove.val() === "rock" && theirMove.val() === "scissors") {
-          setWin(true);
+          setWin(1);
         } else if (myMove.val() === "scissors" && theirMove.val() === "paper") {
-          setWin(true);
+          setWin(1);
         } else if (myMove.val() === "paper" && theirMove.val() === "rock") {
-          setWin(true);
+          setWin(1);
+        } else if (myMove.val() === theirMove.val()) {
+          setWin(0);
         } else {
-          setWin(false);
+          setWin(2);
         }
         setShowResult(true);
       }, 1000);
