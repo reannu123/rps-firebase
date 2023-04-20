@@ -86,7 +86,12 @@ function GamePage(props: any) {
           setLobby(lobby.key);
           setPlayerNum(1);
           setOpponentNum(2);
-          setOppImg(lobby.val().player2.photourl);
+          if (lobby.val().player2.photourl) {
+            setOppImg(lobby.val().player2.photourl);
+          } else {
+            // Get url of default profile pic from google
+            setOppImg("https://i.stack.imgur.com/34AD2.jpg");
+          }
         } else if (lobby.val().player2.uid === props.user.uid) {
           setInQueue(false);
           setInGame(true);
@@ -94,7 +99,12 @@ function GamePage(props: any) {
           setLobby(lobby.key);
           setPlayerNum(2);
           setOpponentNum(1);
-          setOppImg(lobby.val().player1.photourl);
+          if (lobby.val().player1.photourl) {
+            setOppImg(lobby.val().player1.photourl);
+          } else {
+            // Get url of default profile pic from google
+            setOppImg("https://i.stack.imgur.com/34AD2.jpg");
+          }
         }
       });
     }
