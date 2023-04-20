@@ -1,7 +1,6 @@
 {
   "name": "firebase-test",
   "private": true,
-  "homepage": "/firebase-test/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
