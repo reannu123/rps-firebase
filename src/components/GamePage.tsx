@@ -35,10 +35,13 @@ function GamePage(props: any) {
   const [oppImg, setOppImg] = useState("");
   const [playerReady, setPlayerReady] = useState(true);
 
+  const [queue, loadingqueue, errorqueue] = useObject(
+    ref(rtdb, "queue/" + props.user.uid)
+  );
+
   // Interactable functions
   function joinQueue(user: User) {
-    const queue = ref(rtdb, "queue/" + user.uid);
-    set(queue, {
+    set(ref(rtdb, "queue/" + props.user.uid), {
       uid: user.uid,
       name: user.displayName,
       email: user.email,
@@ -74,6 +77,7 @@ function GamePage(props: any) {
   }
 
   const [lobbies, loading, error] = useList(ref(rtdb, "lobbies/"));
+  const [queues, loadingQueue, errorQueue] = useList(ref(rtdb, "queue/"));
 
   // Check if the user has been placed in a lobby
   useEffect(() => {
@@ -109,6 +113,18 @@ function GamePage(props: any) {
       });
     }
   }, [lobbies]);
+
+  useEffect(() => {
+    if (queue?.val()) {
+      if (queue.val().uid === props.user.uid) {
+        setInQueue(true);
+      } else {
+        setInQueue(false);
+      }
+    } else {
+      setInQueue(false);
+    }
+  }, [queues, queue]);
 
   // Check if the lobby still exists in the list of lobbies
   useEffect(() => {
