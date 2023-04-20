@@ -82,7 +82,7 @@ function GamePage(props: any) {
         if (lobby.val().player1.uid === props.user.uid) {
           setInQueue(false);
           setInGame(true);
-          setOpponent(lobby.val().player2.email);
+          setOpponent(lobby.val().player2.name);
           setLobby(lobby.key);
           setPlayerNum(1);
           setOpponentNum(2);
@@ -90,7 +90,7 @@ function GamePage(props: any) {
         } else if (lobby.val().player2.uid === props.user.uid) {
           setInQueue(false);
           setInGame(true);
-          setOpponent(lobby.val().player1.email);
+          setOpponent(lobby.val().player1.name);
           setLobby(lobby.key);
           setPlayerNum(2);
           setOpponentNum(1);
@@ -224,7 +224,7 @@ function GamePage(props: any) {
                   {canMove ? (
                     <>
                       <button
-                        className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+                        className="m-4 bg-yellow-900 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded transition-all"
                         onClick={() => {
                           addMove("rock");
                         }}
@@ -232,7 +232,7 @@ function GamePage(props: any) {
                         Rock
                       </button>
                       <button
-                        className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+                        className="m-4 bg-gray-100 hover:bg-gray-300 text-black font-medium py-2 px-4 rounded transition-all"
                         onClick={() => {
                           addMove("paper");
                         }}
@@ -240,7 +240,7 @@ function GamePage(props: any) {
                         Paper
                       </button>
                       <button
-                        className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+                        className="m-4 bg-pink-400 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded transition-all"
                         onClick={() => {
                           addMove("scissors");
                         }}
@@ -254,7 +254,7 @@ function GamePage(props: any) {
                 </div>
                 <div>
                   <button
-                    className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+                    className="m-4 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition-all"
                     onClick={() => leaveGame()}
                   >
                     Leave Game
@@ -323,7 +323,7 @@ function GamePage(props: any) {
   return (
     <div>
       <button
-        className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+        className="m-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-all"
         onClick={() => {
           joinQueue(props.user);
           setInQueue(true);
