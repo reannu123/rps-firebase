@@ -16,9 +16,15 @@ import {
   useListVals,
   useObjectVal,
 } from "react-firebase-hooks/database";
+import MenuScreen from "../pages/MenuScreen";
+import Queue from "../pages/Queue";
+import PlayMenu from "../pages/PlayMenu";
 
 function GamePage(props: any) {
   const rtdb = getDatabase(props.app);
+
+  // Screen States
+  const [screen, setScreen] = useState(0);
 
   // States
   const [inQueue, setInQueue] = useState(false);
@@ -40,18 +46,26 @@ function GamePage(props: any) {
   );
 
   // Interactable functions
-  function joinQueue(user: User) {
+  function joinQueue() {
     set(ref(rtdb, "queue/" + props.user.uid), {
-      uid: user.uid,
-      name: user.displayName,
-      email: user.email,
-      photourl: user.photoURL,
+      uid: props.user.uid,
+      name: props.user.displayName,
+      email: props.user.email,
+      photourl: props.user.photoURL,
     });
+    setInQueue(true);
   }
 
   function leaveQueue() {
     set(ref(rtdb, "queue/" + props.user.uid), null);
     setInQueue(false);
+  }
+
+  function setReady() {
+    setPlayerReady(false);
+    setShowResult(false);
+    setCanMove(true);
+    setShowMove(false);
   }
 
   function leaveGame() {
@@ -78,6 +92,21 @@ function GamePage(props: any) {
 
   const [lobbies, loading, error] = useList(ref(rtdb, "lobbies/"));
   const [queues, loadingQueue, errorQueue] = useList(ref(rtdb, "queue/"));
+  const [ready1, loadingReady1, errorReady1] = useObject(
+    ref(rtdb, "lobbies/" + lobbyID + "/ready/player" + playerNum)
+  );
+  const [ready2, loadingReady2, errorReady2] = useObject(
+    ref(rtdb, "lobbies/" + lobbyID + "/ready/player" + opponentNum)
+  );
+
+  // get my latest move
+  const [myMoves, loadingMyMoves, errorMyMoves] = useList(
+    ref(rtdb, "lobbies/" + lobbyID + "/moves/player" + playerNum)
+  );
+  // get opponent's latest move
+  const [theirMoves, loadingTheirMoves, errorTheirMoves] = useList(
+    ref(rtdb, "lobbies/" + lobbyID + "/moves/player" + opponentNum)
+  );
 
   // Check if the user has been placed in a lobby
   useEffect(() => {
@@ -114,6 +143,7 @@ function GamePage(props: any) {
     }
   }, [lobbies]);
 
+  // Check if the user is in the queue
   useEffect(() => {
     if (queue?.val()) {
       if (queue.val().uid === props.user.uid) {
@@ -145,28 +175,7 @@ function GamePage(props: any) {
     }
   }, [lobbies]);
 
-  const [ready1, loadingReady1, errorReady1] = useObject(
-    ref(rtdb, "lobbies/" + lobbyID + "/ready/player" + playerNum)
-  );
-  const [ready2, loadingReady2, errorReady2] = useObject(
-    ref(rtdb, "lobbies/" + lobbyID + "/ready/player" + opponentNum)
-  );
-
-  // get my latest move
-  const [myMoves, loadingMyMoves, errorMyMoves] = useList(
-    ref(rtdb, "lobbies/" + lobbyID + "/moves/player" + playerNum)
-  );
-  // get opponent's latest move
-  const [theirMoves, loadingTheirMoves, errorTheirMoves] = useList(
-    ref(rtdb, "lobbies/" + lobbyID + "/moves/player" + opponentNum)
-  );
-  function setReady() {
-    setPlayerReady(false);
-    setShowResult(false);
-    setCanMove(true);
-    setShowMove(false);
-  }
-
+  // Game logic
   useEffect(() => {
     if (ready1?.val() && ready2?.val() && myMoves && theirMoves) {
       console.log("Opponent's Moves: ", theirMoves);
@@ -233,6 +242,7 @@ function GamePage(props: any) {
       <div className="h-[90vh]">
         <h1 className="text-center text-xl">In Game</h1>
         <div className="p-4 flex flex-col w-screen items-center justify-center">
+          {/* Opponent */}
           <section>
             <div className="flex flex-row justify-center">
               <div className="flex flex-col items-center">
@@ -242,6 +252,7 @@ function GamePage(props: any) {
               </div>
             </div>
           </section>
+          {/* Controls */}
           <section>
             <div className="flex flex-row justify-center">
               <div className="flex flex-col items-center">
@@ -348,15 +359,41 @@ function GamePage(props: any) {
 
   return (
     <div>
-      <button
-        className="m-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-all"
-        onClick={() => {
-          joinQueue(props.user);
-          setInQueue(true);
-        }}
-      >
-        Queue
-      </button>
+      {screen === 0 ? (
+        <MenuScreen setScreen={setScreen} />
+      ) : screen === 1 ? (
+        <PlayMenu setScreen={setScreen} joinQueue={joinQueue} />
+      ) : screen === 2 ? (
+        <div>
+          <h1 className="text-4xl text-center select-none mb-4 lg:mb-10">
+            Friends
+          </h1>
+          <div
+            className="h-[10vh] w-[30vh] lg:h-[15vh] bg-purple-600  hover:bg-purple-500 text-3xl hover:text-4xl transition-all flex items-center justify-center rounded-lg"
+            onClick={() => {
+              setScreen(0);
+            }}
+          >
+            <h1 className="m-auto">Back</h1>
+          </div>
+        </div>
+      ) : screen === 3 ? (
+        <div>
+          <h1 className="text-4xl text-center select-none mb-4 lg:mb-10">
+            Options
+          </h1>
+          <div
+            className="h-[10vh] w-[30vh] lg:h-[15vh] bg-purple-600  hover:bg-purple-500 text-3xl hover:text-4xl transition-all flex items-center justify-center rounded-lg"
+            onClick={() => {
+              setScreen(0);
+            }}
+          >
+            <h1 className="m-auto">Back</h1>
+          </div>
+        </div>
+      ) : null}
+
+      {/* <PlayMenu /> */}
     </div>
   );
 }

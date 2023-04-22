@@ -21,7 +21,7 @@ function NavBar(props: any) {
           <div className="flex items-center justify-end">
             <h3 className="m-4">Hello {user.displayName}!</h3>
             <button
-              className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
+              className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all whitespace-nowrap"
               onClick={() => {
                 props.auth.signOut();
               }}
