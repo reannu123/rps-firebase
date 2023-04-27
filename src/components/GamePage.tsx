@@ -16,9 +16,11 @@ import {
   useListVals,
   useObjectVal,
 } from "react-firebase-hooks/database";
-import MenuScreen from "../pages/MenuScreen";
-import Queue from "../pages/Queue";
-import PlayMenu from "../pages/PlayMenu";
+import MenuScreen from "../pages/Menus/MenuScreen";
+import Queue from "../pages/GamePages/GameScreens/Queue";
+import PlayMenu from "../pages/Menus/Play";
+import FriendsScreen from "../pages/Menus/FriendsScreen";
+import OptionsScreen from "../pages/Menus/OptionsScreen";
 
 function GamePage(props: any) {
   const rtdb = getDatabase(props.app);
@@ -44,7 +46,7 @@ function GamePage(props: any) {
   const [queue, loadingqueue, errorqueue] = useObject(
     ref(rtdb, "queue/" + props.user.uid)
   );
-
+  let gameType = "casual";
   // Interactable functions
   function joinQueue() {
     set(ref(rtdb, "queue/" + props.user.uid), {
@@ -225,17 +227,7 @@ function GamePage(props: any) {
   //
 
   if (inQueue && !inGame) {
-    return (
-      <div>
-        <h1>Waiting for other players...</h1>
-        <button
-          className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
-          onClick={() => leaveQueue()}
-        >
-          Leave Queue
-        </button>
-      </div>
-    );
+    return <></>;
   } else if (!inQueue && inGame) {
     // GAME
     return (
@@ -356,46 +348,6 @@ function GamePage(props: any) {
       </div>
     );
   }
-
-  return (
-    <div>
-      {screen === 0 ? (
-        <MenuScreen setScreen={setScreen} />
-      ) : screen === 1 ? (
-        <PlayMenu setScreen={setScreen} joinQueue={joinQueue} />
-      ) : screen === 2 ? (
-        <div>
-          <h1 className="text-4xl text-center select-none mb-4 lg:mb-10">
-            Friends
-          </h1>
-          <div
-            className="h-[10vh] w-[30vh] lg:h-[15vh] bg-purple-600  hover:bg-purple-500 text-3xl hover:text-4xl transition-all flex items-center justify-center rounded-lg"
-            onClick={() => {
-              setScreen(0);
-            }}
-          >
-            <h1 className="m-auto">Back</h1>
-          </div>
-        </div>
-      ) : screen === 3 ? (
-        <div>
-          <h1 className="text-4xl text-center select-none mb-4 lg:mb-10">
-            Options
-          </h1>
-          <div
-            className="h-[10vh] w-[30vh] lg:h-[15vh] bg-purple-600  hover:bg-purple-500 text-3xl hover:text-4xl transition-all flex items-center justify-center rounded-lg"
-            onClick={() => {
-              setScreen(0);
-            }}
-          >
-            <h1 className="m-auto">Back</h1>
-          </div>
-        </div>
-      ) : null}
-
-      {/* <PlayMenu /> */}
-    </div>
-  );
 }
 
 export default GamePage;

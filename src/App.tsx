@@ -7,8 +7,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import NavBar from "./components/NavBar";
-import GamePage from "./components/GamePage";
 import { useEffect, useState } from "react";
+import Home from "./pages/Home";
+import SetName from "./components/SetName";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -32,30 +33,9 @@ const auth = getAuth(app);
 
 function App() {
   const [user, loadingUser, errorUser] = useAuthState(auth);
-  const [name, setName] = useState("");
   const [inputName, setInputName] = useState(false);
   const [updateProfile, updatingProfile, errorProfile] = useUpdateProfile(auth);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in.");
-      } else {
-        console.log("No user is signed in.");
-      }
-    });
-  }, [user]);
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      // 👇 Get input value
-      if (name === "") {
-        return;
-      }
-      updateProfile({ displayName: name });
-      setInputName(false);
-    }
-  };
+  const [isAnon, setIsAnon] = useState(false);
 
   return (
     <div className="App">
@@ -68,30 +48,16 @@ function App() {
       <div className="h-[90vh] flex flex-col items-center justify-center">
         <section>
           {user && !inputName ? (
-            <GamePage user={user} app={app} />
+            <Home user={user} app={app} />
           ) : loadingUser && !inputName ? (
             <>Loading Account...</>
           ) : inputName ? (
-            <>
-              <div>Set a Name</div>
-              <input
-                type="text"
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="bg-white text-black"
-              />
-              <button
-                className="m-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded transition-all"
-                onClick={() => {
-                  updateProfile({ displayName: name });
-                  setInputName(false);
-                }}
-              >
-                Submit
-              </button>
-            </>
+            <SetName
+              updateProfile={updateProfile}
+              setInputName={setInputName}
+            />
           ) : (
-            <>Login to Play!</>
+            <div>Login to Play!</div>
           )}
         </section>
       </div>
